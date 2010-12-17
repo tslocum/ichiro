@@ -1,0 +1,132 @@
+<%= erb :header, :layout => false %>
+<h1><%= @testvarw %></h1>
+<div class="postarea"> 
+			<form name="postform" id="postform" action="/post" method="post" enctype="multipart/form-data"> 
+			<input type="hidden" name="MAX_FILE_SIZE" value="2097152">
+			<input type="hidden" name="parent" value="<%= @resmode == true ? @resid : "0" %>">
+			<table class="postform"> 
+				<tbody> 
+					<tr> 
+						<td class="postblock"> 
+							Name
+						</td> 
+						<td> 
+							<input type="text" name="name" size="28" maxlength="50" accesskey="n"> 
+						</td> 
+					</tr> 
+					<tr> 
+						<td class="postblock"> 
+							E-mail
+						</td> 
+						<td> 
+							<input type="text" name="email" size="28" maxlength="50" accesskey="e"> 
+						</td> 
+					</tr> 
+					<tr> 
+						<td class="postblock"> 
+							Subject
+						</td> 
+						<td> 
+							<input type="text" name="subject" size="40" maxlength="50" accesskey="s"> 
+							<input type="submit" value="Submit" accesskey="z"> 
+						</td> 
+					</tr> 
+					<tr> 
+						<td class="postblock"> 
+							Message
+						</td> 
+						<td> 
+							<textarea name="message" cols="48" rows="4" accesskey="m"></textarea> 
+						</td> 
+					</tr> 
+					<tr> 
+						<td class="postblock"> 
+							File
+						</td> 
+						<td> 
+							<input type="file" name="file" size="35" accesskey="f"> 
+						</td> 
+					</tr> 
+					<tr> 
+						<td class="postblock"> 
+							Password
+						</td> 
+						<td> 
+							<input type="password" name="password" size="8" accesskey="p">&nbsp;(for post and file deletion)
+						</td> 
+					</tr> 
+					<tr> 
+						<td colspan="2" class="rules"> 
+							<ul> 
+								<li>Supported file types are: GIF, JPG, PNG</li> 
+								<li>Maximum file size allowed is 2 MB.</li> 
+								<li>Images greater than 250x250 pixels will be thumbnailed.</li> 
+							</ul> 
+						</td> 
+					</tr> 
+				</tbody> 
+			</table> 
+			</form> 
+		</div>
+<hr>
+<% @threads.each do |thread| %>
+	<% op = true %>
+	<% omitted = 0 %>
+	<% if @resmode == true %>
+		<% posts = thread.posts %>
+	<% else %>
+		<% if thread.posts.count > 4 %>
+			<% posts = thread.posts.all(:order => :id.desc).all(:limit => 3) %>
+			<% posts << thread.posts.first %>
+			<% posts.reverse! %>
+			<% omitted = thread.posts.count - 4 %>
+		<% else %>
+			<% posts = thread.posts %>
+		<% end %>
+	<% end %>
+	<% posts.each do |post| %>
+		<% if op == false %>
+			<table><tbody>
+				<tr>
+					<td class="doubledash">
+						&gt;&gt;
+					</td>
+					<td class="reply" id="reply<%= post.id %>">
+		<% end %>
+		<a name="<%= post.id %>"></a>
+		<label>
+		<input type="checkbox" name="delete" value="<%= post.id %>">
+		<% if post.subject != '' %>
+			<span class="filetitle"><%= post.subject %></span>
+		<% end %>
+		<%= post.time.strftime("%y/%m/%d(%a)%H:%M:%S") %>
+		</label>
+		<span class="reflink">
+		<a>
+		No.
+        <%= post.id %>
+        </a>
+		</span>
+		<% if op == true && @resmode == false %>
+			[<a href="/res/<%= post.id %>">Reply</a>]
+		<% end %>
+		<blockquote>
+		<%= post.message %>
+		</blockquote>
+		<% if op == true %>
+			<% @resmode == false && if omitted > 0 %>
+				<span class="omittedposts">
+					<%= omitted %> post<% if omitted > 1 %>s<% end%> omitted. Click Reply to view.
+				</span>
+			<% end %>
+		<% else %>
+					</td>
+				</tr>
+			</tbody></table>
+		<% end %>
+		<% op = false %>
+	<% end %>
+	<br clear="left">
+    <hr>
+<% end %>
+<%= erb :footer, :layout => false %>
