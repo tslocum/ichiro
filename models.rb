@@ -1,6 +1,6 @@
 require 'datamapper'
 
-DataMapper.setup(:default, "sqlite3:ichiro.db")
+DataMapper.setup(:default, ENV['DATABASE_URL'] || "sqlite3:ichiro.db")
 
 class PostThread
 	include DataMapper::Resource

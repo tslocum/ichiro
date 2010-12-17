@@ -1,7 +1,6 @@
 require 'rubygems'
 require 'digest/md5'
 require 'sinatra'
-require 'sinatra/content_for'
 require 'sinatra/reloader' if development?
 require 'erb'
 
