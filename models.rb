@@ -17,9 +17,8 @@ class PostThread
 	property :permasage,	Boolean,	:default => false
 	property :sticky,		Boolean,	:default => false
 	
-	def self.board (page)
-		offset = page.to_i * settings.threads
-		all(:order => :sticky.desc, :order => :lastbump.desc, :offset => offset, :limit => settings.threads)
+	def self.board
+		all(:order => :sticky.desc, :order => :lastbump.desc, :limit => settings.threads)
 	end
 end
 

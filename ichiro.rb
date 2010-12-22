@@ -3,7 +3,6 @@ require 'digest/md5'
 require 'sinatra'
 require 'sinatra/reloader' if development?
 require 'erb'
-require 'maruku'
 
 load 'config.rb'
 load 'models.rb'
@@ -18,7 +17,7 @@ before do
 end
 
 get "/" do
-	@threads = PostThread.board(@page)
+	@threads = PostThread.board
 	erb :index
 end
 
