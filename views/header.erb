@@ -1,13 +1,22 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-<title>test</title>
+<title><%= settings.title %></title>
 <link rel="shortcut icon" href="/favicon.ico">
 <link rel="stylesheet" type="text/css" href="/stylesheets/global.css">
-<link rel="stylesheet" type="text/css" href="/stylesheets/futaba.css" title="Futaba">
-<link rel="alternate stylesheet" type="text/css" href="/stylesheets/burichan.css" title="Burichan">
+<link rel="stylesheet" type="text/css" href="/stylesheets/2ch.css" title="2ch">
 <meta http-equiv="content-type" content="text/html;charset=UTF-8">
 <meta http-equiv="pragma" content="no-cache">
 <meta http-equiv="expires" content="-1">
 </head>
-<body>
+<% if @resmode == false %>
+<body class="board">
+	<div class="hborder"> 
+		<div class="head">
+			<%= settings.header %>
+		</div>
+	</div>
+<% else %>
+<body class="read">
+<% end %>
+	

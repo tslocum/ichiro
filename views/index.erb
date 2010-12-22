@@ -1,132 +1,86 @@
 <%= erb :header, :layout => false %>
-<h1><%= @testvarw %></h1>
-<div class="postarea"> 
-			<form name="postform" id="postform" action="/post" method="post" enctype="multipart/form-data"> 
-			<input type="hidden" name="MAX_FILE_SIZE" value="2097152">
-			<input type="hidden" name="parent" value="<%= @resmode == true ? @resid : "0" %>">
-			<table class="postform"> 
-				<tbody> 
-					<tr> 
-						<td class="postblock"> 
-							Name
-						</td> 
-						<td> 
-							<input type="text" name="name" size="28" maxlength="50" accesskey="n"> 
-						</td> 
-					</tr> 
-					<tr> 
-						<td class="postblock"> 
-							E-mail
-						</td> 
-						<td> 
-							<input type="text" name="email" size="28" maxlength="50" accesskey="e"> 
-						</td> 
-					</tr> 
-					<tr> 
-						<td class="postblock"> 
-							Subject
-						</td> 
-						<td> 
-							<input type="text" name="subject" size="40" maxlength="50" accesskey="s"> 
-							<input type="submit" value="Submit" accesskey="z"> 
-						</td> 
-					</tr> 
-					<tr> 
-						<td class="postblock"> 
-							Message
-						</td> 
-						<td> 
-							<textarea name="message" cols="48" rows="4" accesskey="m"></textarea> 
-						</td> 
-					</tr> 
-					<tr> 
-						<td class="postblock"> 
-							File
-						</td> 
-						<td> 
-							<input type="file" name="file" size="35" accesskey="f"> 
-						</td> 
-					</tr> 
-					<tr> 
-						<td class="postblock"> 
-							Password
-						</td> 
-						<td> 
-							<input type="password" name="password" size="8" accesskey="p">&nbsp;(for post and file deletion)
-						</td> 
-					</tr> 
-					<tr> 
-						<td colspan="2" class="rules"> 
-							<ul> 
-								<li>Supported file types are: GIF, JPG, PNG</li> 
-								<li>Maximum file size allowed is 2 MB.</li> 
-								<li>Images greater than 250x250 pixels will be thumbnailed.</li> 
-							</ul> 
-						</td> 
-					</tr> 
-				</tbody> 
-			</table> 
-			</form> 
-		</div>
-<hr>
+<% if @resmode == false %>
+<div class="hborder"> 
+	<div class="head threadldiv"> 
+		<a name="menu" rev="contents"></a>
+		<ul class="threadlistflat" id="threadlist">
+		<% @relid_thread = 0 %>
+		<% @threads.each do |thread| %>
+			<% @relid_thread += 1 %>
+			<li class="threadlink" id="<%= thread.id %>"><a href="/<%= thread.id %>"><%= @relid_thread %>: </a><a href="#<%= @relid_thread %>"><%= thread.subject %> (<%= thread.posts.count %>)</a></li>
+		<% end %>
+		</ul><br>
+		<span class="threadlinks"><a href="#newthread">New Thread</a> | <a href="/list">All Threads</a></span> 
+	</div>
+</div>
+<% end %>
+<% @relid_thread = 0 %>
 <% @threads.each do |thread| %>
 	<% op = true %>
 	<% omitted = 0 %>
+	<% @relid_thread += 1 %>
+	<% @relid_post = 1 %>
 	<% if @resmode == true %>
 		<% posts = thread.posts %>
 	<% else %>
-		<% if thread.posts.count > 4 %>
-			<% posts = thread.posts.all(:order => :id.desc).all(:limit => 3) %>
-			<% posts << thread.posts.first %>
-			<% posts.reverse! %>
-			<% omitted = thread.posts.count - 4 %>
+		<% if thread.posts.count > (settings.replies + 1) %>
+			<% posts = threadsummary(thread) %>
+			<% omitted = thread.posts.count - (settings.replies + 1) %>
+			<% @relid_post = thread.posts.count - settings.replies %>
 		<% else %>
 			<% posts = thread.posts %>
 		<% end %>
 	<% end %>
-	<% posts.each do |post| %>
-		<% if op == false %>
-			<table><tbody>
-				<tr>
-					<td class="doubledash">
-						&gt;&gt;
-					</td>
-					<td class="reply" id="reply<%= post.id %>">
-		<% end %>
-		<a name="<%= post.id %>"></a>
-		<label>
-		<input type="checkbox" name="delete" value="<%= post.id %>">
-		<% if post.subject != '' %>
-			<span class="filetitle"><%= post.subject %></span>
-		<% end %>
-		<%= post.time.strftime("%y/%m/%d(%a)%H:%M:%S") %>
-		</label>
-		<span class="reflink">
-		<a>
-		No.
-        <%= post.id %>
-        </a>
-		</span>
-		<% if op == true && @resmode == false %>
-			[<a href="/res/<%= post.id %>">Reply</a>]
-		<% end %>
-		<blockquote>
-		<%= post.message %>
-		</blockquote>
-		<% if op == true %>
-			<% @resmode == false && if omitted > 0 %>
-				<span class="omittedposts">
-					<%= omitted %> post<% if omitted > 1 %>s<% end%> omitted. Click Reply to view.
+	<% if @resmode == false %>
+		<div class="border">
+			<a name="<%= @relid_thread %>"></a>
+			<div class="thread">
+				<span class="navlinks">
+					<a href="#menu">menu</a>
 				</span>
-			<% end %>
-		<% else %>
-					</td>
-				</tr>
-			</tbody></table>
-		<% end %>
+			<br>
+	<% else %>
+	<a href="/">Front Page</a>
+	<hr class="tophr">
+	<% end %>
+	<h2>
+		<% if @resmode == false %><span class="replies">[<%= @relid_thread %>:<%= thread.posts.count %>]</span><% end %> <a href="/<%= thread.id %>"><%= thread.subject %></a>
+	</h2>
+	<% posts.each do |post| %>
+		<div class="post">
+			<h3>
+				<span class="postnum">
+					<%= op == true ? "1" : @relid_post %>
+				</span>
+				<span class="postinfo">
+					<span class="namelabel"> Name: </span>
+					<span class="postername">
+						<%= post.email != "" ? '<a href="mailto:' + post.email + '">' : "" %><%= post.name != "" && post.trip != "" ? post.name : "Anonymous" %><%= post.trip.to_s != "" ? '</span><span class="postertrip">!' + post.trip : "" %><%= post.email != "" ? '</a>' : "" %>
+					</span>
+					<span class="posterdate">
+						<%= post.time.strftime("%y/%m/%d(%a)%H:%M:%S") %>
+					</span>
+				</span>
+			</h3>
+			<blockquote>
+			<%= post.message %>
+			</blockquote>
+		</div>
+		<% @relid_post += 1 %>
 		<% op = false %>
 	<% end %>
-	<br clear="left">
-    <hr>
+	<%= erb :postform, :layout => false, :locals => {:parent => thread.id} %>
+	<% if @resmode == false %>
+		</div>
+    </div>
+	<% end %>
+<% end %>
+<% if @resmode == false %>
+<div class="hborder">
+	<div class="head newthread">
+		<a id="newthread"></a>
+		<%= erb :postform, :layout => false, :locals => {:parent => "0"} %>
+	</div>
+</div>
 <% end %>
 <%= erb :footer, :layout => false %>

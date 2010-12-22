@@ -1,0 +1,47 @@
+<form action="/post" method="post">
+<input type="hidden" name="parent" value="<%= parent %>">
+<table class="<%= parent == "0" ? "newthreadform" : "postform" %>">
+	<tbody>
+		<% if parent == "0" %>
+		<tr>
+			<td class="label">
+				Subject:
+			</td>
+			<td>
+				<input type="text" name="subject" size="28" maxlength="35" accesskey="s">
+			</td>
+			<td colspan="3" style="text-align: right;">
+				<input type="submit" value="Create New Thread" class="submit" accesskey="z">
+			</td>
+		</tr>
+		<% end %>
+		<tr>
+			<td class="label">
+				Name:
+			</td>
+			<td>
+				<input type="text" name="name" size="28" maxlength="35" accesskey="e">
+			</td>
+			<td class="label">
+				Email:
+			</td>
+			<td style="text-align: right;"<%= parent == "0" ? ' colspan="2"' : "" %>>
+				<input type="text" name="email" size="28" maxlength="35" accesskey="e">
+			</td>
+			<% if parent != "0" %>
+			<td style="text-align: right;">
+				<input type="submit" value="Reply" accesskey="z">
+			</td>
+			<% end %>
+		</tr>
+		<tr>
+			<td class="label">
+				Message
+			</td>
+			<td colspan="4">
+				<textarea name="message" cols="64" rows="6" accesskey="m"></textarea>
+			</td>
+		</tr>
+	</tbody>
+</table>
+</form>

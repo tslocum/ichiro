@@ -1,4 +1,3 @@
-require 'sinatra'
-require 'app.rb'
+require 'ichiro.rb'
 
 run Sinatra::Application

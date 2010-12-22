@@ -1,62 +1,59 @@
-body {
-	margin: 0;
-	padding: 8px;
-	margin-bottom: auto;
+div, p, span, th, td {
+	font-size: 1em;
 }
 
-blockquote blockquote {
-	margin-left: 0em;
+.quote {
+	border-left: solid 2px #666;
+	padding: 0px 0px 0px 10px;
+	margin: 3px 0px;
+	display: block;
 }
 
-form {
-	margin-bottom: 0px;
+.quote .quote {
+	border-left: solid 2px #888;
 }
 
-.postarea {
-	text-align: center;
+.quote .quote .quote {
+	border-left: solid 2px #aaa;
 }
 
-.postarea table {
-	margin: 0px auto;
-	text-align: left;
+.quote:hover {
+	background: #f0f0e0;
+}
+
+.spoiler {
+	color: black;
+	background-color: black;
 }
 
 .aa {
-  white-space: pre;
-  text-align: left;
-  font-family: IPAMonaPGothic, Mona, 'MS PGothic', YOzFontAA97 !important;
+	text-align: left;
+	font: 100% Mona, IPAMonaPGothic, 'MS PGothic' !important;
 }
 
-.thumb {
-	border: none;
-	float: left;
-	margin: 2px 20px;
+.o {
+	text-decoration: overline;
 }
 
-.nothumb {
-	float: left;
-	background: #eee;
-	border: 2px dashed #aaa;
-	text-align: center;
-	margin: 2px 20px;
-	padding: 1em 0.5em 1em 0.5em;
+tt {
+	font-size: smaller;
 }
 
-.reply blockquote, blockquote :last-child {
-	margin-bottom: 0em;
+.navlinks {
+	float: right;
 }
 
-.reflink a {
-	color: inherit;
+.navlinks a {
 	text-decoration: none;
 }
 
-.reflink a:hover{
-	color: #800000;
+.threadlinks {
+	display: block;
+    text-align: right;
 }
 
-.reply .filesize {
-	margin-left: 20px;
+.threadlinks a {
+    font-weight: bold;
 }
 
 .userdelete {
@@ -65,37 +62,15 @@ form {
 	white-space: nowrap;
 }
 
-.doubledash {
- 	vertical-align: top;
-	clear: both;
-	float: left;
+.abbrev {
+	color: #707070;
 }
 
-.moderator {
-	color: #FF0000;
+.loggedin {
+  color: brown;
+  font-weight: bold;
 }
 
-.managebutton {
-	font-size: 15px;
-	height: 28px;
-	margin: 0.2em;
-}
-
-.footer {
-	clear: both;
-	text-align:center;
-}
-
-.rules ul {
-	margin: 0;
-	padding-left: 0;
-}
-
-.floatpost {
-	float: right;
-	clear: both;
-}
-
-.login {
-	text-align: center;
+.loggedinblip {
+  font-size: .75em;
 }
