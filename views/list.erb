@@ -16,8 +16,8 @@
 				<% @threads.each do |thread| %>
 				<% @relid_thread += 1 %>
 				<tr>
-					<td><a href="/<%= thread.id %>"><%= @relid_thread %></a></td>
-					<td><a href="/<%= thread.id %>"><%= thread.subject %></a></td>
+					<td><a href="/<%= @board.dir %>/<%= thread.id %>/"><%= @relid_thread %></a></td>
+					<td><a href="/<%= @board.dir %>/<%= thread.id %>/"><%= thread.subject %></a></td>
 					<td><%= thread.posts.count %></td>
 					<td><small><%= thread.posts.last.time.strftime("%y/%m/%d(%a)%H:%M:%S") %></small></td>
 				</tr>
