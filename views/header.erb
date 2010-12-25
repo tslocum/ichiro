@@ -1,7 +1,11 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-<title><%= settings.title %></title>
+<% if @board %>
+<title>/<%= @board.dir %>/ - <%= @board.name %></title>
+<% else %>
+<title>Ichiro</title>
+<% end %>
 <link rel="shortcut icon" href="/favicon.ico">
 <link rel="stylesheet" type="text/css" href="/stylesheets/global.css">
 <link rel="stylesheet" type="text/css" href="/stylesheets/2ch.css" title="2ch">
@@ -11,9 +15,10 @@
 </head>
 <% if @resmode == false %>
 <body class="board">
+	<br>
 	<div class="hborder"> 
 		<div class="head">
-			<%= settings.header %>
+			<%= @board ? @board.header : '<h1 style="text-align: center;">Ichiro</h1>' %>
 		</div>
 	</div>
 <% else %>

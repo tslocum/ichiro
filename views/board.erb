@@ -1,16 +1,16 @@
 <%= erb :header, :layout => false %>
 <% if @resmode == false %>
-<div class="hborder"> 
-	<div class="head threadldiv"> 
+<div class="hborder">
+	<div class="head threadldiv">
 		<a name="menu" rev="contents"></a>
 		<ul class="threadlistflat" id="threadlist">
 		<% @relid_thread = 0 %>
 		<% @threads.each do |thread| %>
 			<% @relid_thread += 1 %>
-			<li class="threadlink" id="<%= thread.id %>"><a href="/<%= thread.id %>"><%= @relid_thread %>: </a><a href="#<%= @relid_thread %>"><%= thread.subject %> (<%= thread.posts.count %>)</a></li>
+			<li class="threadlink"><a href="/<%= @board.dir %>/<%= thread.id %>"><%= @relid_thread %>: </a><a href="#<%= @relid_thread %>"><%= thread.subject %> (<%= thread.posts.count %>)</a></li>
 		<% end %>
 		</ul><br>
-		<span class="threadlinks"><a href="#newthread">New Thread</a> | <a href="/list">All Threads</a></span> 
+		<span class="threadlinks"><a href="#newthread">New Thread</a> | <a href="/<%= @board.dir %>/list">All Threads</a></span> 
 	</div>
 </div>
 <% end %>
@@ -36,15 +36,17 @@
 			<a name="<%= @relid_thread %>"></a>
 			<div class="thread">
 				<span class="navlinks">
-					<a href="#menu">menu</a>
+					<a href="#menu">&#9632;</a>
+					<a href="#<%= @relid_thread == 1 ? @threads.count : @relid_thread - 1 %>">&#9650;</a>
+					<a href="#<%= @relid_thread == @threads.count ? 1 : @relid_thread + 1 %>">&#9660;</a>
 				</span>
 			<br>
 	<% else %>
-	<a href="/">Front Page</a>
+	<a href="/<%= @board.dir %>/">Front Page</a>
 	<hr class="tophr">
 	<% end %>
 	<h2>
-		<% if @resmode == false %><span class="replies">[<%= @relid_thread %>:<%= thread.posts.count %>]</span><% end %> <a href="/<%= thread.id %>"><%= thread.subject %></a>
+		<% if @resmode == false %><span class="replies">[<%= @relid_thread %>:<%= thread.posts.count %>]</span><% end %> <a href="/<%= @board.dir %>/<%= thread.id %>"><%= thread.subject %></a>
 	</h2>
 	<% posts.each do |post| %>
 		<div class="post">

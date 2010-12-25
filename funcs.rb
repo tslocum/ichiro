@@ -1,7 +1,7 @@
 require 'digest/md5'
 
 def sanitizestr (inputstr)
-	return inputstr.gsub("&", "&amp;").gsub("<", "&lt;").gsub(">", "&gt;").gsub('"', "&quot;")
+	return inputstr.strip.gsub("&", "&amp;").gsub("<", "&lt;").gsub(">", "&gt;").gsub('"', "&quot;")
 end
 
 def threadsummary (thread)
@@ -20,4 +20,9 @@ def formatstr (inputstr)
 		inputstr.gsub!(/&lt;#{tag}&gt;(.+?)&lt;\/#{tag}&gt;/im, "<#{tag}>\\1</#{tag}>")
 	end
 	inputstr
+end
+
+def displayerror (message)
+	@error = message
+	erb :error
 end

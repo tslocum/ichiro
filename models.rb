@@ -3,6 +3,19 @@ require 'datamapper'
 DataMapper.setup(:default, ENV['DATABASE_URL'] || "sqlite3:ichiro.db")
 #DataMapper::Model.raise_on_save_failure = true
 
+class Board
+	include DataMapper::Resource
+
+	has n, :postthreads, 'PostThread',
+		:parent_key => [ :id ],
+		:child_key  => [ :board_id ]
+	
+	property :id,		Serial,		:key => true
+	property :name,		String,		:length => 50
+	property :dir,		String,		:length => 50
+	property :header,	String,		:length => 50
+end
+
 class PostThread
 	include DataMapper::Resource
 
@@ -10,6 +23,10 @@ class PostThread
 		:parent_key => [ :id ],
 		:child_key  => [ :thread_id ],
 		:order => :id.asc
+	belongs_to :board, 'Board',
+		:parent_key => [ :id ],
+		:child_key  => [ :board_id ],
+		:required   => true
 	
 	property :id,			Serial,		:key => true
 	property :lastbump,		DateTime
@@ -19,6 +36,10 @@ class PostThread
 	
 	def self.board
 		all(:order => :sticky.desc, :order => :lastbump.desc, :limit => settings.threads)
+	end
+	
+	def self.list
+		all(:order => :sticky.desc, :order => :lastbump.desc)
 	end
 end
 

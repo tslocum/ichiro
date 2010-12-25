@@ -1,0 +1,30 @@
+<%= erb :header, :layout => false %>
+<div class="hborder"> 
+	<div class="head"> 
+		<div class="pages">
+			<table class="threads"> 
+				<thead> 
+					<tr> 
+						<th width="10%">#</th> 
+						<th width="100%">Subject</th> 
+						<th>Posts</th> 
+						<th>Last Post</th> 
+					</tr>
+				</thead>
+				<tbody>
+				<% @relid_thread = 0 %>
+				<% @threads.each do |thread| %>
+				<% @relid_thread += 1 %>
+				<tr>
+					<td><a href="/<%= thread.id %>"><%= @relid_thread %></a></td>
+					<td><a href="/<%= thread.id %>"><%= thread.subject %></a></td>
+					<td><%= thread.posts.count %></td>
+					<td><small><%= thread.posts.last.time.strftime("%y/%m/%d(%a)%H:%M:%S") %></small></td>
+				</tr>
+				<% end %>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+<%= erb :footer, :layout => false %>
