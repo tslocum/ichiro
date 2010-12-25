@@ -2,7 +2,7 @@ a:link, a:visited {color: blue}
 a:hover, a:active {color: red}
 
 body.board, body.list {margin: 0}
-body.board {background-image: url(ba.gif);}
+body.board {background-image: url('/images/ba.gif');}
 body.read {background-color: #efefef;}
 .head, body.board .thread { border: 1px inset gray; padding: 6px;}
 table.postform td {text-align: left;}
