@@ -19,7 +19,7 @@ def formatstr (inputstr)
 	allowedtags.each do |tag|
 		inputstr.gsub!(/&lt;#{tag}&gt;(.+?)&lt;\/#{tag}&gt;/im, "<#{tag}>\\1</#{tag}>")
 	end
-	inputstr
+	inputstr.gsub!("\n", "<br>")
 end
 
 def displayerror (message)
