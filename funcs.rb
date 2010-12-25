@@ -20,6 +20,7 @@ def formatstr (inputstr)
 		inputstr.gsub!(/&lt;#{tag}&gt;(.+?)&lt;\/#{tag}&gt;/im, "<#{tag}>\\1</#{tag}>")
 	end
 	inputstr.gsub!("\n", "<br>")
+	inputstr
 end
 
 def displayerror (message)
