@@ -7,7 +7,7 @@
 		<% @relid_thread = 0 %>
 		<% @threads.each do |thread| %>
 			<% @relid_thread += 1 %>
-			<li class="threadlink"><a href="/<%= @board.dir %>/<%= thread.id %>"><%= @relid_thread %>: </a><a href="#<%= @relid_thread %>"><%= thread.subject %> (<%= thread.posts.count %>)</a></li>
+			<li class="threadlink"><a href="/<%= @board.dir %>/<%= thread.id %>/"><%= @relid_thread %>:</a> <a href="#<%= @relid_thread %>"><%= thread.subject %> (<%= thread.posts.count %>)</a></li>
 		<% end %>
 		</ul><br>
 		<span class="threadlinks"><a href="#newthread">New Thread</a> | <a href="/<%= @board.dir %>/list">All Threads</a></span> 
@@ -22,6 +22,8 @@
 	<% @relid_post = 1 %>
 	<% if @resmode == true %>
 		<% posts = thread.posts %>
+		<%= erb :threadnav, :layout => false, :locals => {:thread => thread} %>
+		<hr class="tophr">
 	<% else %>
 		<% if thread.posts.count > (settings.replies + 1) %>
 			<% posts = threadsummary(thread) %>
@@ -30,8 +32,6 @@
 		<% else %>
 			<% posts = thread.posts %>
 		<% end %>
-	<% end %>
-	<% if @resmode == false %>
 		<div class="border">
 			<a name="<%= @relid_thread %>"></a>
 			<div class="thread">
@@ -41,38 +41,47 @@
 					<a href="#<%= @relid_thread == @threads.count ? 1 : @relid_thread + 1 %>">&#9660;</a>
 				</span>
 			<br>
-	<% else %>
-	<a href="/<%= @board.dir %>/">Front Page</a>
-	<hr class="tophr">
 	<% end %>
 	<h2>
-		<% if @resmode == false %><span class="replies">[<%= @relid_thread %>:<%= thread.posts.count %>]</span><% end %> <a href="/<%= @board.dir %>/<%= thread.id %>"><%= thread.subject %></a>
+		<% if @resmode == false %><span class="replies">[<%= @relid_thread %>:<%= thread.posts.count %>]</span><% end %> <%= thread.subject %>
 	</h2>
 	<% posts.each do |post| %>
-		<div class="post">
-			<h3>
-				<span class="postnum">
-					<%= op == true ? "1" : @relid_post %>
-				</span>
-				<span class="postinfo">
-					<span class="namelabel"> Name: </span>
-					<span class="postername">
-						<%= post.email != "" ? '<a href="mailto:' + post.email + '">' : "" %><%= post.name != "" && post.trip != "" ? post.name : "Anonymous" %><%= post.trip.to_s != "" ? '</span><span class="postertrip">!' + post.trip : "" %><%= post.email != "" ? '</a>' : "" %>
+		<% if !post.deleted %>
+			<div class="post">
+				<h3>
+					<span class="postnum">
+						<%= op == true ? "1" : @relid_post %>
 					</span>
-					<span class="posterdate">
-						<%= post.time.strftime("%y/%m/%d(%a)%H:%M:%S") %>
+					<span class="postinfo">
+						<span class="namelabel"> Name: </span>
+						<span class="postername">
+							<%= post.email != "" ? '<a href="mailto:' + post.email + '">' : "" %><%= post.name != "" && post.trip != "" ? post.name : "Anonymous" %><%= post.trip.to_s != "" ? '</span><span class="postertrip">!' + post.trip : "" %><%= post.email != "" ? '</a>' : "" %>
+						</span>
+						<span class="posterdate">
+							<%= post.time.strftime("%y/%m/%d(%a)%H:%M:%S") %>
+						</span>
 					</span>
-				</span>
-			</h3>
-			<blockquote>
-			<%= post.message %>
-			</blockquote>
-		</div>
+				</h3>
+				<blockquote>
+				<%= post.message %>
+				</blockquote>
+			</div>
+			<% if op == true %>
+			<br>
+			<% end %>
+		<% end %>
 		<% @relid_post += 1 %>
 		<% op = false %>
 	<% end %>
+	<% if @resmode == true %>
+	<hr>
+	<div style="text-align: center;"><a href="/<%= @board.dir %>/<%= thread.id %>/<%= @relid_post - 1 %>n-">Newer Posts</a></div>
+	<hr>
+	<%= erb :threadnav, :layout => false, :locals => {:thread => thread} %>
+	<% end %>
 	<%= erb :postform, :layout => false, :locals => {:parent => thread.id} %>
 	<% if @resmode == false %>
+		<%= erb :threadnav, :layout => false, :locals => {:thread => thread} %>
 		</div>
     </div>
 	<% end %>

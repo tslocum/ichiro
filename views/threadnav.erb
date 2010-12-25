@@ -1,0 +1,12 @@
+<% if @resmode == false %>
+<span class="threadnav">
+<% else %>
+	<a href="/<%= @board.dir %>/">Return to BBS</a>
+<% end %>
+	<a href="/<%= @board.dir %>/<%= thread.id %>/">Entire Thread</a>
+	<a href="/<%= @board.dir %>/<%= thread.id %>/">Previous 100</a>
+	<a href="/<%= @board.dir %>/<%= thread.id %>/">Next 100</a>
+	<a href="/<%= @board.dir %>/<%= thread.id %>/l50">Last 50</a>
+<% if @resmode == false %>
+</span>
+<% end %>

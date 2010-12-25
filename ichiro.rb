@@ -7,7 +7,8 @@ require 'erb'
 load 'config.rb'
 load 'models.rb'
 load 'funcs.rb'
-#set :logging, :true
+
+enable :sessions
 
 configure :production do
 	not_found do
@@ -22,6 +23,11 @@ end
 before do
 	@resmode = false
 	@resid = "0"
+	@sysop = false
+	
+	if settings.sysop == "" then
+		return displayerror("Please set a sysop password in config.rb")
+	end
 end
 
 get %r{^/([A-Za-z0-9]+)/([0-9]+)/?} do |boarddir, res|
@@ -47,13 +53,27 @@ get %r{^/([A-Za-z0-9]+)/list/?} do |boarddir|
 	end
 end
 
-=begin
-get "/newboard" do
-	board = Board.new
-	board.attributes = { :name => "Testing", :dir => "test", :header => "<h1>Testing</h1>" }
-	board.save
+get "/manage" do
+	erb :manage
 end
-=end
+
+get "/manage/:page" do |page|
+	if page == "logout" then
+		session["sysop"] = ""
+	end
+	erb :manage
+end
+
+post "/manage" do
+	if params["sysop"] != "" then
+		if params["sysop"] == settings.sysop then
+			session["sysop"] = params["sysop"]
+			redirect '/manage'
+		else
+			return displayerror("Invalid sysop password.")
+		end
+	end
+end
 
 post "/post" do
 	if params["board"] then
@@ -112,6 +132,17 @@ post "/post" do
 		end
 	else
 		return displayerror("Unable to save post.")
+	end
+end
+
+get %r{^/([A-Za-z0-9]+)/([0-9\-l\,]+)/?} do |boarddir,modifier|
+	# TODO
+	@board = Board.first(:dir => boarddir)
+	if @board then
+		@threads = PostThread.all(:board_id => @board.id).board
+		erb :board
+	else
+		erb :'404'
 	end
 end
 

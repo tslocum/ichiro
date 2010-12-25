@@ -1,0 +1,32 @@
+<% @resmode = true %>
+<%= erb :header, :layout => false %>
+<% if session["sysop"] == settings.sysop %>
+<a href="/manage/logout">Log out</a>
+<hr>
+Logged in
+<% else %>
+<form id="sysopform" action="/manage" method="post">
+<table class="postform" align="center">
+	<tbody>
+		<tr>
+			<td class="label">
+				Sysop Password:
+			</td>
+			<td>
+				<input type="password" name="sysop" id="sysop" size="35" accesskey="p">
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" style="text-align: center;">
+				<input type="submit" value="Submit" accesskey="s">
+			</td>
+		</tr>
+	</tbody>
+</table>
+</form>
+<script type="text/javascript">
+document.getElementById("sysop").focus();
+</script>
+<hr>
+<% end %>
+<%= erb :footer, :layout => false %>

@@ -39,7 +39,7 @@ class PostThread
 	end
 	
 	def self.list
-		all(:order => :sticky.desc, :order => :lastbump.desc)
+		all(:order => :sticky.desc, :order => :lastbump.desc, :limit => settings.threadlinks)
 	end
 end
 
