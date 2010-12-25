@@ -13,7 +13,7 @@ Replace "mytxtsite" with the name of the site you will be creating.
 	$ cp config.default.rb config.rb
 	$ nano config.rb
     $ heroku create mytxtsite
-	$ git add -f config.rb
+	$ git add config.rb
 	$ git commit -m "heroku"
     $ git push heroku master
 	
