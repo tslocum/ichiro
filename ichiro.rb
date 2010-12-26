@@ -60,30 +60,47 @@ end
 get "/manage/:page" do |page|
 	if page == "logout" then
 		session["sysop"] = ""
-	elsif page == "delete" && params["thread"] != nil && params["post"] != nil then
-		p params["thread"]
-		thread = PostThread.get(params["thread"])
-		if thread then
-			if params["post"] == "0" then
-				thread.posts.destroy
-				thread.destroy
-				return displaymessage("Thread deleted.")
-			else
-				post = thread.posts.first(:order => :id.asc, :offset => (params["post"].to_i - 1))
-				if post then
-					if !post.deleted then
-						post.deleted = true
-						post.save
-						return displaymessage("Post deleted.")
+	else
+		if session["sysop"] == settings.sysop then
+			if page == "newboard" && params["dir"] != nil && params["name"] != nil then
+				board = Board.first(:dir => params["dir"])
+				if board then
+					return displayerror("A board with that directory already exists.")
+				else
+					board = Board.new
+					board.attributes = { :name => params["name"], :dir => params["dir"], :header => "<h1>" + params["name"] + "</h1>" }
+					if board.save then
+						return displaymessage('Board successfully created.<br><a href="/' + params["dir"] + '/">Visit /' + params["dir"] + '/</a>')
 					else
-						displayerror("Post has already been deleted.")
+						return displayerror("Unable to create board.")
+					end
+				end
+			elsif page == "delete" && params["thread"] != nil && params["post"] != nil then
+				p params["thread"]
+				thread = PostThread.get(params["thread"])
+				if thread then
+					if params["post"] == "0" then
+						thread.posts.destroy
+						thread.destroy
+						return displaymessage("Thread deleted.")
+					else
+						post = thread.posts.first(:order => :id.asc, :offset => (params["post"].to_i - 1))
+						if post then
+							if !post.deleted then
+								post.deleted = true
+								post.save
+								return displaymessage("Post deleted.")
+							else
+								return displayerror("Post has already been deleted.")
+							end
+						else
+							return displayerror("Invalid post ID supplied.")
+						end
 					end
 				else
-					return displayerror("Invalid post ID supplied.")
+					return displayerror("Invalid thread ID supplied.")
 				end
 			end
-		else
-			return displayerror("Invalid thread ID supplied.")
 		end
 	end
 	erb :manage, :locals => {:page => page}
@@ -179,4 +196,8 @@ get %r{^/([A-Za-z0-9]+)/?} do |boarddir|
 	else
 		erb :'404'
 	end
+end
+
+get "/" do
+	erb :index
 end

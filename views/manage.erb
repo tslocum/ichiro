@@ -1,7 +1,7 @@
 <% @resmode = true %>
 <%= erb :header, :layout => false %>
 <% if session["sysop"] == settings.sysop %>
-<a href="/manage/logout">Log out</a>
+<a href="/manage/logout">Log out</a> <a href="/manage/newboard">New Board</a>
 <hr>
 <% if page == "newboard" %>
 <form action="/manage/newboard" method="get">

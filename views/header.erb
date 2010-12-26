@@ -4,7 +4,7 @@
 <% if @board %>
 <title>/<%= @board.dir %>/ - <%= @board.name %></title>
 <% else %>
-<title>Ichiro</title>
+<title><%= settings.name %></title>
 <% end %>
 <link rel="shortcut icon" href="/favicon.ico">
 <link rel="stylesheet" type="text/css" href="/stylesheets/global.css">
@@ -19,7 +19,7 @@
 	<br>
 	<div class="hborder"> 
 		<div class="head">
-			<%= @board ? @board.header : '<h1 style="text-align: center;">Ichiro</h1>' %>
+			<%= @board ? @board.header : '<h1 style="text-align: center;">' + settings.name + '</h1>' %>
 		</div>
 	</div>
 <% else %>
