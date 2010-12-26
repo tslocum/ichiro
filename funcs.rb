@@ -15,11 +15,15 @@ def threadsummary (thread)
 end
 
 def formatstr (inputstr)
-	allowedtags = ["b", "i", "u", "s", "sub", "sup"]
-	allowedtags.each do |tag|
-		inputstr.gsub!(/&lt;#{tag}&gt;(.+?)&lt;\/#{tag}&gt;/im, "<#{tag}>\\1</#{tag}>")
+	if inputstr =~ /^&lt;pre&gt;/ && inputstr =~ /&lt;\/pre&gt;$/ then
+		inputstr.gsub!(/&lt;pre&gt;(.+?)&lt;\/pre&gt;/im, "<span class=\"aa\">\\1</span>")
+	else
+		allowedtags = ["b", "i", "u", "s", "sub", "sup"]
+		allowedtags.each do |tag|
+			inputstr.gsub!(/&lt;#{tag}&gt;(.+?)&lt;\/#{tag}&gt;/im, "<#{tag}>\\1</#{tag}>")
+		end
+		inputstr.gsub!("\n", "<br>\n")
 	end
-	inputstr.gsub!("\n", "<br>")
 	inputstr
 end
 

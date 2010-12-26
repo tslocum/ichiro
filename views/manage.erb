@@ -3,11 +3,41 @@
 <% if session["sysop"] == settings.sysop %>
 <a href="/manage/logout">Log out</a>
 <hr>
+<% if page == "newboard" %>
+<form action="/manage/newboard" method="get">
+<table class="postform">
+	<tbody>
+		<tr>
+			<td class="label">
+				Directory:
+			</td>
+			<td>
+				<input type="text" name="dir" size="15" accesskey="d">
+			</td>
+		</tr>
+		<tr>
+			<td class="label">
+				Name:
+			</td>
+			<td>
+				<input type="text" name="name" size="15" accesskey="n">
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" style="text-align: center;">
+				<input type="submit" value="Add New Board" accesskey="a">
+			</td>
+		</tr>
+	</tbody>
+</table>
+</form>
+<% else %>
 <table>
 <tr><td>Boards:</td><td><b><%= Board.count %></b></td></tr>
 <tr><td>Threads:</td><td><b><%= PostThread.count %></b></td></tr>
 <tr><td>Posts:</td><td><b><%= Post.count %></b> (<i><%= Post.count(:deleted => true) %> deleted</i>)</td></tr>
 </table>
+<% end %>
 <% else %>
 <form id="sysopform" action="/manage" method="post">
 <table class="postform" align="center">
@@ -31,6 +61,6 @@
 <script type="text/javascript">
 document.getElementById("sysop").focus();
 </script>
-<hr>
 <% end %>
+<hr>
 <%= erb :footer, :layout => false %>

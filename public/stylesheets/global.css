@@ -28,6 +28,7 @@ div, p, span, th, td {
 
 .aa {
 	text-align: left;
+	white-space: pre;
 	font: 100% Mona, IPAMonaPGothic, 'MS PGothic' !important;
 }
 
