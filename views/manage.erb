@@ -3,7 +3,11 @@
 <% if session["sysop"] == settings.sysop %>
 <a href="/manage/logout">Log out</a>
 <hr>
-Logged in
+<table>
+<tr><td>Boards:</td><td><b><%= Board.count %></b></td></tr>
+<tr><td>Threads:</td><td><b><%= PostThread.count %></b></td></tr>
+<tr><td>Posts:</td><td><b><%= Post.count %></b> (<i><%= Post.count(:deleted => true) %> deleted</i>)</td></tr>
+</table>
 <% else %>
 <form id="sysopform" action="/manage" method="post">
 <table class="postform" align="center">

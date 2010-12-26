@@ -46,7 +46,12 @@
 		<% if @resmode == false %><span class="replies">[<%= @relid_thread %>:<%= thread.posts.count %>]</span><% end %> <%= thread.subject %>
 	</h2>
 	<% posts.each do |post| %>
-		<% if !post.deleted %>
+		<% if post.deleted %>
+			<div class="post">
+				<span class="postnum"><%= @relid_post %></span>
+				<span class="postinfo deleted">Post deleted</span>
+			</div><br>
+		<% else %>
 			<div class="post">
 				<h3>
 					<span class="postnum">
@@ -60,6 +65,11 @@
 						<span class="posterdate">
 							<%= post.time.strftime("%y/%m/%d(%a)%H:%M:%S") %>
 						</span>
+						<% if session["sysop"] == settings.sysop %>
+						<span class="adminnav">
+							<a href="/manage/delete?thread=<%= thread.id %>&post=<%= @relid_post %>" onclick="javascript:return confirm('Are you sure you want to delete this post?')">Delete <%= @relid_post %></a>
+						</span>
+						<% end %>
 					</span>
 				</h3>
 				<blockquote>

@@ -27,3 +27,8 @@ def displayerror (message)
 	@error = message
 	erb :error
 end
+
+def displaymessage (message)
+	@message = message
+	erb :message
+end

@@ -11,3 +11,9 @@
 <a href="/<%= @board.dir %>/<%= thread.id %>/">Next 100</a>
 <a href="/<%= @board.dir %>/<%= thread.id %>/l50">Last 50</a>
 <% end %>
+<% if session["sysop"] == settings.sysop %>
+<span class="adminnav">
+<a href="/manage/delete?thread=<%= thread.id %>&post=0" onclick="javascript:return confirm('Are you sure you want to delete this thread?')">Delete Thread</a>
+<a href="/manage">Go to Manage</a>
+</span>
+<% end %>

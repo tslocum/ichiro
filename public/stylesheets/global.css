@@ -60,6 +60,14 @@ tt {
     font-weight: bold;
 }
 
+.adminnav {
+	float: right;
+}
+
+.adminnav a {
+	color: red !important;
+}
+
 .userdelete {
 	float: right;
 	text-align: center;
@@ -77,4 +85,8 @@ tt {
 
 .loggedinblip {
   font-size: .75em;
+}
+
+.deleted {
+	color: #ADADAD !important;
 }

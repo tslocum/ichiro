@@ -34,7 +34,7 @@ get %r{^/([A-Za-z0-9]+)/([0-9]+)/?} do |boarddir, res|
 	@board = Board.first(:dir => boarddir)
 	if @board then
 		@resmode = true
-		thread = Post.get(res).postthread
+		thread = PostThread.get(res)
 		@resid = thread.id
 		@threads = [ thread ]
 		erb :board
@@ -54,14 +54,39 @@ get %r{^/([A-Za-z0-9]+)/list/?} do |boarddir|
 end
 
 get "/manage" do
-	erb :manage
+	erb :manage, :locals => {:page => ""}
 end
 
 get "/manage/:page" do |page|
 	if page == "logout" then
 		session["sysop"] = ""
+	elsif page == "delete" && params["thread"] != nil && params["post"] != nil then
+		p params["thread"]
+		thread = PostThread.get(params["thread"])
+		if thread then
+			if params["post"] == "0" then
+				thread.posts.destroy
+				thread.destroy
+				return displaymessage("Thread deleted.")
+			else
+				post = thread.posts.first(:order => :id.asc, :offset => (params["post"].to_i - 1))
+				if post then
+					if !post.deleted then
+						post.deleted = true
+						post.save
+						return displaymessage("Post deleted.")
+					else
+						displayerror("Post has already been deleted.")
+					end
+				else
+					return displayerror("Invalid post ID supplied.")
+				end
+			end
+		else
+			return displayerror("Invalid thread ID supplied.")
+		end
 	end
-	erb :manage
+	erb :manage, :locals => {:page => page}
 end
 
 post "/manage" do
