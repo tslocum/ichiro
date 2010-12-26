@@ -46,6 +46,9 @@
 		<% if @resmode == false %><span class="replies">[<%= @relid_thread %>:<%= thread.posts.count %>]</span><% end %> <%= thread.subject %>
 	</h2>
 	<% posts.each do |post| %>
+		<% if @resmode == true %>
+			<a name="<%= @relid_post %>"></a>
+		<% end %>
 		<% if post.deleted %>
 			<div class="post">
 				<span class="postnum"><%= @relid_post %></span>
