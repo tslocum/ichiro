@@ -7,8 +7,8 @@
 <% else %>
 <a href="/<%= @board.dir %>/">Return to BBS</a>
 <a href="/<%= @board.dir %>/<%= thread.id %>/">Entire Thread</a>
-<a href="/<%= @board.dir %>/<%= thread.id %>/">Previous 100</a>
-<a href="/<%= @board.dir %>/<%= thread.id %>/">Next 100</a>
+<a href="/<%= @board.dir %>/<%= thread.id %>/<%= [ @first_post_relid - 101, 1 ].max.to_s + "-" + [ @first_post_relid - 1, 1 ].max.to_s %>">Previous 100</a>
+<a href="/<%= @board.dir %>/<%= thread.id %>/<%= (thread.posts.count > @last_post_relid ? @last_post_relid + 1: @last_post_relid).to_s + "-" + [ thread.posts.count, @last_post_relid + 100 ].min.to_s %>">Next 100</a>
 <a href="/<%= @board.dir %>/<%= thread.id %>/l50">Last 50</a>
 <% end %>
 <% if session["sysop"] == settings.sysop %>

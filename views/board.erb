@@ -5,9 +5,14 @@
 		<a name="menu" rev="contents"></a>
 		<ul class="threadlistflat" id="threadlist">
 		<% @relid_thread = 0 %>
-		<% @threads.each do |thread| %>
+		<% threadlinks = @board.postthreads.list %>
+		<% threadlinks.each do |thread| %>
 			<% @relid_thread += 1 %>
-			<li class="threadlink"><a href="/<%= @board.dir %>/<%= thread.id %>/"><%= @relid_thread %>:</a> <a href="#<%= @relid_thread %>"><%= thread.subject %> (<%= thread.posts.count %>)</a></li>
+			<% if @relid_thread > settings.threads %>
+				<li class="threadlink"><a href="/<%= @board.dir %>/<%= thread.id %>/l50"><%= @relid_thread %>: <%= thread.subject %> (<%= thread.posts.count %>)</a></li>
+			<% else %>
+				<li class="threadlink"><a href="/<%= @board.dir %>/<%= thread.id %>/l50"><%= @relid_thread %>:</a> <a href="#<%= @relid_thread %>"><%= thread.subject %> (<%= thread.posts.count %>)</a></li>
+			<% end %>
 		<% end %>
 		</ul><br>
 		<span class="threadlinks"><a href="#newthread">New Thread</a> | <a href="/<%= @board.dir %>/list">All Threads</a></span> 
@@ -16,29 +21,34 @@
 <% end %>
 <% @relid_thread = 0 %>
 <% @threads.each do |thread| %>
-	<% op = true %>
 	<% omitted = 0 %>
 	<% @relid_thread += 1 %>
-	<% @relid_post = 1 %>
 	<% if @resmode == true %>
-		<% posts = thread.posts %>
+		<% if @modifier == "" %>
+			<% posts = thread.posts %>
+		<% else %>
+			<% posts = readmodifier(@modifier, thread.posts) %>
+		<% end %>
+		<% @first_post_relid = posts.first(:relid.not => 1) ? posts.first(:relid.not => 1).relid : 1 %>
+		<% @last_post_relid = posts.last.relid %>
 		<%= erb :threadnav, :layout => false, :locals => {:thread => thread} %>
 		<hr class="tophr">
 	<% else %>
 		<% if thread.posts.count > (settings.replies + 1) %>
 			<% posts = threadsummary(thread) %>
 			<% omitted = thread.posts.count - (settings.replies + 1) %>
-			<% @relid_post = thread.posts.count - settings.replies %>
 		<% else %>
 			<% posts = thread.posts %>
 		<% end %>
+		<% @first_post_relid = posts.first.relid %>
+		<% @last_post_relid = posts.last.relid %>
 		<div class="border">
 			<a name="<%= @relid_thread %>"></a>
 			<div class="thread">
 				<span class="navlinks">
 					<a href="#menu">&#9632;</a>
-					<a href="#<%= @relid_thread == 1 ? @threads.count : @relid_thread - 1 %>">&#9650;</a>
-					<a href="#<%= @relid_thread == @threads.count ? 1 : @relid_thread + 1 %>">&#9660;</a>
+					<a href="#<%= @relid_thread == 1 ? [ @threads.count, settings.threads ].min : @relid_thread - 1 %>">&#9650;</a>
+					<a href="#<%= @relid_thread == [ @threads.count, settings.threads ].min ? 1 : @relid_thread + 1 %>">&#9660;</a>
 				</span>
 			<br>
 	<% end %>
@@ -47,18 +57,18 @@
 	</h2>
 	<% posts.each do |post| %>
 		<% if @resmode == true %>
-			<a name="<%= @relid_post %>"></a>
+			<a name="<%= post.relid %>"></a>
 		<% end %>
 		<% if post.deleted %>
 			<div class="post">
-				<span class="postnum"><%= @relid_post %></span>
+				<span class="postnum"><%= post.relid %></span>
 				<span class="postinfo deleted">Post deleted</span>
 			</div><br>
 		<% else %>
 			<div class="post">
 				<h3>
 					<span class="postnum">
-						<%= op == true ? "1" : @relid_post %>
+						<%= post.relid %>
 					</span>
 					<span class="postinfo">
 						<span class="namelabel"> Name: </span>
@@ -70,7 +80,7 @@
 						</span>
 						<% if session["sysop"] == settings.sysop %>
 						<span class="adminnav">
-							<a href="/manage/delete?thread=<%= thread.id %>&post=<%= @relid_post %>" onclick="javascript:return confirm('Are you sure you want to delete this post?')">Delete <%= @relid_post %></a>
+							<a href="/manage/delete?thread=<%= thread.id %>&post=<%= post.relid %>" onclick="javascript:return confirm('Are you sure you want to delete this post?')">Delete <%= post.relid %></a>
 						</span>
 						<% end %>
 					</span>
@@ -79,16 +89,14 @@
 				<%= post.message %>
 				</blockquote>
 			</div>
-			<% if op == true %>
+			<% if post.relid == 1 %>
 			<br>
 			<% end %>
 		<% end %>
-		<% @relid_post += 1 %>
-		<% op = false %>
 	<% end %>
 	<% if @resmode == true %>
 	<hr>
-	<div style="text-align: center;"><a href="/<%= @board.dir %>/<%= thread.id %>/<%= @relid_post - 1 %>n-">Newer Posts</a></div>
+	<div style="text-align: center;"><a href="/<%= @board.dir %>/<%= thread.id %>/<%= @last_post_relid %>n-">Newer Posts</a></div>
 	<hr>
 	<%= erb :threadnav, :layout => false, :locals => {:thread => thread} %>
 	<% end %>

@@ -27,6 +27,50 @@ def formatstr (inputstr)
 	inputstr
 end
 
+def readmodifier (modifier, posts)
+	originalposts = posts
+	matches = modifier.match(/^([0-9]+)n?$/) # Single POST
+	if !matches.nil? then
+		posts = [ posts.first(:relid => matches[1]) ]
+	else
+		matches = modifier.match(/^([0-9]+)n?\-$/) # POST and every post after
+		if !matches.nil? then
+			if modifier =~ /n/ then
+				posts = posts.all(:relid.gte => matches[1])
+			else
+				posts = posts.all(:relid => 1) + posts.all(:relid.gte => matches[1])
+			end
+		else
+			matches = modifier.match(/^\-([0-9]+)n?$/) # Every post up to and including POST
+			if !matches.nil? then
+				posts = posts.all(:relid.lte => matches[1])
+			else
+				matches = modifier.match(/^([0-9]+)n?\-([0-9]+)n?$/) # Every post from POST to POST
+				if !matches.nil? then
+					if modifier =~ /n/ then
+						posts = posts.all(:relid.gte => matches[1]) & posts.all(:relid.lte => matches[2])
+					else
+						posts = posts.all(:relid => 1) + posts.all(:relid.gte => matches[1]) & posts.all(:relid.lte => matches[2])
+					end
+				else
+					matches = modifier.match(/^l([0-9]+)n?$/) # Last (num) posts
+					if !matches.nil? then
+						if modifier =~ /n/ then
+							posts = posts.all(:relid.gt => (posts.count - matches[1].to_i))
+						else
+							posts = posts.all(:relid => 1) + posts.all(:relid.gt => (posts.count - matches[1].to_i))
+						end
+					end
+				end
+			end
+		end
+	end
+	if posts == [ nil ] then
+		posts = originalposts
+	end
+	posts
+end
+
 def displayerror (message)
 	@error = message
 	erb :error

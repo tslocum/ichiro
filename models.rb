@@ -52,6 +52,7 @@ class Post
 		:required   => true
 	
 	property :id,		Serial
+	property :relid,	Integer
 	property :time,		DateTime
 	property :ip,		String,		:length => 15
 	property :name,		String,		:length => 50

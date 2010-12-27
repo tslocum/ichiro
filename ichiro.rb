@@ -23,10 +23,29 @@ end
 before do
 	@resmode = false
 	@resid = "0"
+	@modifier = ""
 	@sysop = false
 	
 	if settings.sysop == "" then
 		return displayerror("Please set a sysop password in config.rb")
+	end
+end
+
+get %r{^/([A-Za-z0-9]+)/([0-9]+)/([0-9\-ln\,]+)/?} do |boarddir,res,modifier|
+	@board = Board.first(:dir => boarddir)
+	if @board then
+		thread = PostThread.get(res)
+		if thread then
+			@resmode = true
+			@resid = thread.id
+			@modifier = modifier
+			@threads = [ thread ]
+			erb :board
+		else
+			erb :'404'
+		end
+	else
+		erb :'404'
 	end
 end
 
@@ -46,7 +65,7 @@ end
 get %r{^/([A-Za-z0-9]+)/list/?} do |boarddir|
 	@board = Board.first(:dir => boarddir)
 	if @board then
-		@threads = PostThread.all(:board_id => @board.id).list
+		@threads = @board.postthreads
 		erb :list
 	else
 		return displayerror("No such board.")
@@ -76,7 +95,6 @@ get "/manage/:page" do |page|
 					end
 				end
 			elsif page == "delete" && params["thread"] != nil && params["post"] != nil then
-				p params["thread"]
 				thread = PostThread.get(params["thread"])
 				if thread then
 					if params["post"] == "0" then
@@ -141,6 +159,7 @@ post "/post" do
 	end
 	
 	if not thread then
+		newthread = true
 		thread = PostThread.new
 		thread.board = @board
 		thread.lastbump = Time.now
@@ -158,11 +177,25 @@ post "/post" do
 	post = Post.new
 	post.attributes = { :postthread => thread, :time => Time.now, :ip => request.env["REMOTE_ADDR"], :name => sanitizestr(params["name"]), :email => sanitizestr(params["email"]), :message => message }
 	
+	if newthread then
+		post.relid = 1
+	end
+	
 	if post.save then
 		if bump && !thread.permasage then
 			thread.lastbump = Time.now
 		end
 		if thread.save then
+			if !newthread then
+				post.relid = 0
+				thread.posts.each do |threadpost|
+					post.relid += 1
+					if threadpost.id == post.id then
+						break
+					end
+				end
+				post.save
+			end
 			redirect '/' + @board.dir + '/'
 		else
 			@error = ""
@@ -177,21 +210,10 @@ post "/post" do
 	end
 end
 
-get %r{^/([A-Za-z0-9]+)/([0-9\-l\,]+)/?} do |boarddir,modifier|
-	# TODO
-	@board = Board.first(:dir => boarddir)
-	if @board then
-		@threads = PostThread.all(:board_id => @board.id).board
-		erb :board
-	else
-		erb :'404'
-	end
-end
-
 get %r{^/([A-Za-z0-9]+)/?} do |boarddir|
 	@board = Board.first(:dir => boarddir)
 	if @board then
-		@threads = PostThread.all(:board_id => @board.id).board
+		@threads = @board.postthreads.board
 		erb :board
 	else
 		erb :'404'
