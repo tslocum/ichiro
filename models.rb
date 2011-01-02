@@ -1,5 +1,4 @@
-require 'dm-core'
-require 'dm-migrations'
+require 'datamapper'
 
 DataMapper.setup(:default, ENV['DATABASE_URL'] || "sqlite3:ichiro.db")
 #DataMapper::Model.raise_on_save_failure = true

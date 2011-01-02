@@ -1,8 +1,5 @@
 source :gemcutter
 
 gem 'sinatra'
-gem 'dm-core'
-gem 'dm-migrations'
-gem 'data_objects'
-gem 'do_postgres'
+gem 'datamapper'
 gem 'dm-postgres-adapter'
