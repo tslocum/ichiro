@@ -221,5 +221,9 @@ get %r{^/([A-Za-z0-9]+)/?} do |boarddir|
 end
 
 get "/" do
-	erb :index
+	if Board.count == 1 then
+		redirect '/' + Board.first.dir + '/'
+	else
+		erb :index
+	end
 end
