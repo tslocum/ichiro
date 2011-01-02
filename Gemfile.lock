@@ -65,4 +65,5 @@ PLATFORMS
 DEPENDENCIES
   datamapper
   dm-postgres-adapter
+  do_postgres
   sinatra
